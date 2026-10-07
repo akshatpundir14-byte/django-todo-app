@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Todo App</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 60px;
+        }
+
+        .container {
+            width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px #ccc;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .add-box {
+            display: flex;
+            margin-bottom: 25px;
+        }
+
+        .add-box input {
+            flex: 1;
+            padding: 12px;
+        }
+
+        .add-box button {
+            padding: 12px 20px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            background: #f5f5f5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .edit-form {
+            margin-bottom: 15px;
+        }
+
+        .bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>My Todo App</h1>
+
+    <!-- ADD TASK -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="add-box">
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Enter a task..."
+                required
+            >
+
+            <button type="submit" name="add_task">
+                Add
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- SHOW TASKS -->
+
+    {% for todo in todos %}
+
+    <div class="task">
+
+        <span>
+            {{ todo.title }}
+        </span>
+
+        <!-- DELETE -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="task_id"
+                value="{{ todo.id }}"
+            >
+
+            <button
+                type="submit"
+                name="delete_task">
+                Delete
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- EDIT -->
+
+    <form method="POST" class="edit-form">
+
+        {% csrf_token %}
+
+        <input
+            type="hidden"
+            name="task_id"
+            value="{{ todo.id }}"
+        >
+
+        <input
+            type="text"
+            name="new_title"
+            value="{{ todo.title }}"
+            required
+        >
+
+        <button type="submit" name="edit_task">
+            Edit
+        </button>
+
+    </form>
+
+    {% empty %}
+
+        <p>No tasks yet.</p>
+
+    {% endfor %}
+
+
+    <!-- BOTTOM -->
+
+    <div class="bottom">
+
+        <span>
+            Total tasks: {{ task_count }}
+        </span>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button type="submit" name="clear_all">
+                Clear All
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
